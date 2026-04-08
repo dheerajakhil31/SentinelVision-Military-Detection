@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelVision | Tactical Feed</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container" style="max-width: 1200px;">
+        <header style="text-align: left; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <p class="subtitle">Mission Results Archive</p>
+                <h1 style="font-size: 2.2rem; margin: 0;">Intelligence Report</h1>
+            </div>
+            <div style="text-align: right;">
+                <p style="font-size: 0.7rem; color: var(--muted-grey); margin: 0;">FILE_ID: {{ filename }}</p>
+                <p style="font-size: 0.7rem; color: var(--neon-green); margin: 0;">STATUS: ANALYSIS_COMPLETE</p>
+            </div>
+        </header>
+
+        <div class="analysis-layout">
+            <main>
+                <div class="video-container" style="box-shadow: 0 0 50px rgba(0, 122, 255, 0.15);">
+                    <div class="scan-line"></div>
+                    {% if filename.endswith('.mp4') %}
+                        <video controls autoplay muted loop>
+                            <source src="{{ url_for('results', filename=filename) }}" type="video/mp4">
+                            System Failure: Render Engine Not Found.
+                        </video>
+                    {% else %}
+                        <img src="{{ url_for('results', filename=filename) }}" alt="Tactical Result" style="width: 100%; display: block;">
+                    {% endif %}
+                    
+                    <div style="position: absolute; bottom: 20px; left: 20px; z-index: 5; background: rgba(0,0,0,0.6); padding: 5px 12px; border-radius: 4px; border-left: 3px solid var(--primary-blue); font-size: 0.7rem; letter-spacing: 1px;">
+                        LIVE_FEED // RECON_01
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <a href="/" class="nav-btn" style="flex: 1; text-align: center; background: var(--primary-blue); color: white; border: none; font-weight: 700;">New MISSION</a>
+                    <a href="/stats" class="nav-btn" style="flex: 1; text-align: center;">Mission Analytics</a>
+                </div>
+            </main>
+
+            <aside class="target-feed">
+                <div class="feed-header">
+                    <span class="feed-title">Target Identification Feed</span>
+                    <div class="pulse"></div>
+                </div>
+                
+                <div style="padding: 10px; flex-grow: 1; overflow-y: auto; max-height: 600px;">
+                    {% if summary %}
+                        {% for cls, count in summary.items() %}
+                        <div class="target-item">
+                            <div class="target-info">
+                                <h4>{{ cls.upper() }}</h4>
+                                <p>Signal Locked</p>
+                            </div>
+                            <div class="conf-pill {% if count > 5 %}conf-high{% endif %}">
+                                ID: {{ count }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="text-align: center; padding: 40px 20px; color: var(--muted-grey);">
+                            <p style="font-size: 0.8rem;">SILENT FEED</p>
+                            <p style="font-size: 0.7rem;">No significant hardware signatures detected in sector.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-top: 1px solid var(--glass-border); font-size: 0.7rem; color: var(--muted-grey);">
+                    <p>ANALYSIS_CORE: YOLOv8-MIL</p>
+                    <p>CONF_THRESHOLD: 0.25</p>
+                    <p>SECTOR: SECURE</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+</body>
+</html>

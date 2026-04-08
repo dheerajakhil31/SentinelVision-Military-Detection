@@ -1,0 +1,26 @@
+# Virtual Environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# YOLO training outputs
+runs/
+
+# Dataset (optional if large)
+military_object_dataset/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Model weights
+*.pt
+
+# Videos
+*.mp4
+
+# Uploads (optional)
+uploads/
+Demo/

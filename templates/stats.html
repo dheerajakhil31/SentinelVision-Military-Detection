@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelVision | Intel Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <p class="subtitle">Intelligence Analytics</p>
+            <h1>Global Metrics</h1>
+            <p>Aggregated telemetry from all neural scan missions</p>
+        </header>
+
+        <main class="card" style="border-top: 4px solid var(--primary-blue);">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value" style="color: var(--text-bright);">{{ stats.total_inferences }}</span>
+                    <span class="stat-label">Deployments</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" style="color: var(--neon-green);">{{ "%.2f"|format(stats.total_time) }}s</span>
+                    <span class="stat-label">Total Uptime</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" style="color: var(--primary-blue);">{{ "%.2f"|format(avg_time) }}s</span>
+                    <span class="stat-label">Efficiency</span>
+                </div>
+            </div>
+
+            {% if stats.class_counts %}
+            <div style="margin-top: 50px;">
+                <h2 style="font-size: 0.9rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">Target Identification Frequency</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    {% for cls, count in stats.class_counts.items() %}
+                    <div style="background: rgba(255, 255, 255, 0.02); padding: 25px; border-radius: 12px; border: 1px solid var(--glass-border); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 0; left: 0; height: 100%; width: 4px; background: var(--primary-blue);"></div>
+                        <p style="font-size: 0.75rem; color: var(--muted-grey); text-transform: uppercase; margin: 0;">{{ cls.replace('_', ' ') }}</p>
+                        <p style="font-size: 2rem; font-weight: 900; color: var(--text-bright); margin: 5px 0 0 0;">{{ count }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div style="margin-top: 50px;">
+                <h2 style="font-size: 0.9rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">Mission Log History</h2>
+                <div style="background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--glass-border); overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead style="background: rgba(255,255,255,0.05);">
+                            <tr>
+                                <th style="padding: 15px; font-size: 0.75rem; color: var(--muted-grey); border-bottom: 1px solid var(--glass-border);">PAYLOAD_FILE</th>
+                                <th style="padding: 15px; font-size: 0.75rem; color: var(--muted-grey); border-bottom: 1px solid var(--glass-border);">COMPUTE_TIME</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in stats.files_processed %}
+                            <tr style="border-bottom: 1px solid var(--glass-border); font-size: 0.85rem;">
+                                <td style="padding: 15px; color: var(--text-main);">{{ file.filename }}</td>
+                                <td style="padding: 15px; color: var(--neon-green); font-family: monospace;">{{ "%.3f"|format(file.time) }} s</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="/" class="nav-btn" style="padding: 12px 40px; border-color: var(--primary-blue); color: var(--primary-blue); font-weight: 700;">COMMAND CONSOLE</a>
+        </div>
+    </div>
+</body>
+</html>

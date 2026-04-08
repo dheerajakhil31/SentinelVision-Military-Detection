@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelVision | Command Center</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <p class="subtitle">Tactical Surveillance Division</p>
+            <h1 style="margin-bottom: 5px;">SentinelVision</h1>
+            <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.7rem; color: var(--muted-grey); text-transform: uppercase;">
+                <span>System: Active</span>
+                <span>Inference: GPU_ACCEL</span>
+                <span>Security: Level 4</span>
+            </div>
+        </header>
+
+        <main class="card" style="position: relative; overflow: hidden;">
+            <div class="pulse" style="position: absolute; top: 20px; right: 20px;"></div>
+            <h2 style="font-size: 1.2rem; color: var(--text-bright); margin-bottom: 15px;">Mission Entry Point</h2>
+            <p style="margin-bottom: 25px; color: var(--text-main); font-size: 0.9rem;">Initiate neural network analysis for video or imagery payloads. Compatible with standard military-recon formats.</p>
+            
+            <form action="/upload" method="post" enctype="multipart/form-data" class="upload-section">
+                <input type="file" name="file" accept="video/*,image/*" required id="file-upload">
+                <button type="submit">Execute Intelligence Scan</button>
+            </form>
+        </main>
+
+        {% if recent %}
+        <section style="margin-top: 40px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <div style="flex-grow: 1; height: 1px; background: var(--glass-border);"></div>
+                <h2 style="font-size: 0.9rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 2px;">Archived Recon Data</h2>
+                <div style="flex-grow: 1; height: 1px; background: var(--glass-border);"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                {% for mission in recent %}
+                <div class="card" style="padding: 20px; margin-bottom: 0; background: rgba(255,255,255,0.02);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <p style="font-size: 0.7rem; color: var(--muted-grey);">{{ mission.time }}</p>
+                        <span class="conf-pill" style="font-size: 0.6rem;">ANALYZED</span>
+                    </div>
+                    <h3 style="font-size: 1rem; color: var(--text-bright); margin: 5px 0 15px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ mission.filename }}</h3>
+                    
+                    <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border: 1px solid var(--glass-border);">
+                        {% if mission.summary %}
+                            {% for cls, count in mission.summary.items() %}
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                                    <span style="color: var(--muted-grey);">{{ cls.upper() }}</span>
+                                    <span style="color: var(--neon-green); font-weight: 700;">+{{ count }}</span>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p style="color: var(--muted-grey); font-size: 0.8rem; text-align: center;">No hardware identified</p>
+                        {% endif %}
+                    </div>
+                    <a href="{{ url_for('results', filename=mission.result_file) }}" class="nav-btn" style="display: block; margin-top: 15px; text-align: center; background: rgba(0, 122, 255, 0.05); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Open Intelligence Feed</a>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="/stats" class="nav-btn" style="color: var(--primary-blue); border-color: var(--primary-blue);">Global Intelligence Metrics</a>
+        </div>
+    </div>
+</body>
+</html>
